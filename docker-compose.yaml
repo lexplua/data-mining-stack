@@ -81,9 +81,53 @@ services:
     networks:
       - toolkit_network
 
+  spark-master:
+    build: spark
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+    environment:
+      - SPARK_MODE=master
+    networks:
+      - toolkit_network
+
+  spark-worker:
+    build: spark
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1g
+    ports:
+      - "8081:8081"
+    depends_on:
+      - spark-master
+    networks:
+      - toolkit_network
+
+  jupyter-notebook:
+    build:
+      context: jupyter-notebook
+      args:
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        MINIO_PORT: ${MINIO_PORT}
+        MINIO_HOSTNAME: ${MINIO_HOSTNAME}
+
+    ports:
+      - "8888:8888"
+    environment:
+      - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+    volumes:
+      - notebooks:/home/jovyan/work
+    networks:
+      - toolkit_network
+
+
 volumes:
   minio_data:
   postgres:
+  notebooks:
 
 networks:
   toolkit_network:

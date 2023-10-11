@@ -4,7 +4,7 @@ services:
   mlflow:
 
     image: "mlflow-server"
-    build: ./mlflow
+    build: custom_images/mlflow
 
     ports:
       - "5000:${MLFLOW_PORT}"
@@ -77,7 +77,7 @@ services:
       - toolkit_network
 
   spark-master:
-    build: spark
+    build: custom_images/spark
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -87,7 +87,7 @@ services:
       - toolkit_network
 
   spark-worker:
-    build: spark
+    build: custom_images/spark
     container_name: spark-worker
     environment:
       - SPARK_MODE=worker
@@ -102,7 +102,7 @@ services:
 
   jupyter-notebook:
     build:
-      context: jupyter-notebook
+      context: custom_images/jupyter-notebook
       args:
         AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
         AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
@@ -123,4 +123,3 @@ networks:
   toolkit_network:
     driver: bridge
     name: toolkit_network
-    enable_ipv6: false

@@ -1,22 +1,30 @@
+### MinIO + Spark + Delta Lake + Jupyter notebook setup for local development
+
+![MinIO + Spark + Delta Lake + Jupyter](docs/images/dwh-diagram.png)
+
+Run modern DWH stack locally with single command
+Depedencies:
+- `docker` & `docker compose`
+
+Usage:
+
+- Checkout repository, change `.env` file if needed.
+- Run ```bash ./scripts/start.sh``` to start stack
+- Run ```bash ./scripts/stop.sh``` to stop stack
+
+MinIO web interface on your machine: http://localhost:9001/
+MLFlow web interface on yor machine: http://localhost:5000/
+Spark Master web interface on your machine:	http://localhost:8080
+
+[Demo notebook included !](notebooks/DeltaLakeOnMinIO.ipynb)
+
+
 ### MLFlow + MinIO + Postgres
 
 Local dev environment setup for experiment tracking and artifact storage
 
 Implements Scenario 4 from MLflow [documentation](https://www.mlflow.org/docs/latest/tracking.html#scenario-4-mlflow-with-remote-tracking-server-backend-and-artifact-stores)
 ![diagram](https://www.mlflow.org/docs/latest/_images/scenario_4.png)
-
-MinIO as S3 protocol storage
-
-Usage:
-
-Checkout repository, change `.env` file if needed. Run `docker compose`
-```bash
-docker compose up --build
-```
-
-MinIO web interface on your machine: http://localhost:9001/
-
-MLflow web interface on yor machine: http://localhost:5000/
 
 
 Environment variables for training scripts:

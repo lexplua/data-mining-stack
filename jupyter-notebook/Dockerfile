@@ -38,6 +38,8 @@ RUN if [ -z "${scala_version}" ]; then \
 ENV SPARK_HOME=/usr/local/spark
 ENV SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info" \
     PATH="${PATH}:${SPARK_HOME}/bin"
+ENV JAVA_HOME=/usr/lib/jvm/java-${openjdk_version}-openjdk-amd64/ \
+    PATH="${PATH}:${JAVA_HOME}/bin"
 
 RUN if [ -z "${scala_version}" ]; then \
     ln -s "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}" "${SPARK_HOME}"; \
@@ -83,6 +85,7 @@ RUN pip install --user pyspark==3.4.1 \
     findspark
 RUN pip install --user delta-spark==2.4.0
 
+# Set default spark config with MinIO credentials and Delta Catalog
 USER root
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY

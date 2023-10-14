@@ -3,7 +3,8 @@
 ![MinIO + Spark + Delta Lake + Jupyter](docs/images/dwh-diagram.png)
 
 Run modern DWH stack locally with single command
-Depedencies:
+
+Dependencies:
 - `docker` & `docker compose`
 
 Usage:

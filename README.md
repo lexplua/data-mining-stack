@@ -10,7 +10,7 @@ Dependencies:
 Usage:
 
 - Checkout repository, change `.env` file if needed.
-- Run ```bash ./scripts/start.sh``` to start stack
+- Run ```bash ./scripts/start.sh -w 2``` to start stack with 2 Spark workers
 - Run ```bash ./scripts/stop.sh``` to stop stack
 
 MinIO web interface on your machine: http://localhost:9001/

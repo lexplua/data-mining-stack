@@ -7,7 +7,7 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 
 usage() {
   cat <<EOF # remove the space between << and EOF, this is due to web plugin issue
-Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [--no-browser]
+Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [--no-browser] [-w N]
 
 Starts MinIO, Spark with Delta Lake support and Jupyter notebook to play around
 
@@ -16,6 +16,9 @@ Available options:
 -h, --help      Print this help and exit
 -v, --verbose   Print script debug info
 --no-browser    Do not open browser with Jupyter lab
+-w N| --spark-workers N Set Spark workers count to N
+
+Example: $(basename "${BASH_SOURCE[0]}") -w 5 --no-browser  : Run stack with 5 Spark workers and do not open browser with Jupyter notebook
 EOF
   exit
 }
@@ -62,6 +65,18 @@ parse_params() {
     --no-color)
         NO_COLOR=1
         ;;
+    -w | --spark-workers)
+        SPARK_WORKERS="${2-}"
+        if ! [[ "${SPARK_WORKERS}" =~ ^[0-9]+$ ]]
+        then
+            die "Worker count should be integer"
+        fi
+        if ! [[ "${SPARK_WORKERS}" -gt 0 ]] 2>/dev/null
+        then
+            die "Worker count should be positive"
+        fi
+        shift
+      ;;
     -?*)
         die "Unknown option: $1"
         ;;
@@ -75,12 +90,15 @@ parse_params() {
   return 0
 }
 
+SPARK_WORKERS=1
 parse_params "$@"
+echo "SPARK WORKERS SET TO ${SPARK_WORKERS}"
+
 setup_colors
 
 # Start containers
 
-docker compose up --build -d
+docker compose up --build -d --scale spark-worker="${SPARK_WORKERS}"
 until [ $(docker inspect -f {{.State.Health.Status}}  jupyter-notebook) == "healthy" ]; do
     sleep 0.1;
 done;
